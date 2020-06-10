@@ -1,0 +1,6 @@
+**/main
+/mongo/*
+/kafka/*
+!*.*
+/.idea/*
+/zk-multiple-kafka-single/*

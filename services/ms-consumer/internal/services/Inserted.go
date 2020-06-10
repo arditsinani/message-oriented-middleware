@@ -1,0 +1,16 @@
+package services
+
+import (
+	"context"
+	"go.mongodb.org/mongo-driver/mongo"
+	"mom/services/ms-consumer/internal/models"
+)
+
+func Inserted(c *mongo.Client, ctx context.Context, test interface{}, db string, collection string) (interface{}, error){
+	_, err := c.Database(db).Collection(collection).InsertOne(ctx, test)
+	if err != nil {
+		return models.CreateTestForm{}, err
+	}
+	return test, nil
+}
+
