@@ -9,11 +9,13 @@ import (
 	"mom/services/ms-extractor/config"
 	"mom/services/ms-extractor/internal/db"
 	"mom/services/ms-extractor/internal/models"
+	"mom/services/ms-extractor/internal/services"
 )
 
 type TestController struct {
 	Config *config.Config
 	DB  *db.DB
+	Service services.TestService
 }
 
 func (ctrl *TestController) Create(c *gin.Context) {
@@ -23,7 +25,7 @@ func (ctrl *TestController) Create(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-	inserted, err := ctrl.DB.Create(context.TODO(),createTestForm,models.TESTCOLLECTION)
+	inserted, err := ctrl.Service.Create(context.TODO(),createTestForm,models.TESTCOLLECTION)
 	if err != nil {
 		c.Error(err)
 		return
@@ -33,7 +35,7 @@ func (ctrl *TestController) Create(c *gin.Context) {
 
 func (ctrl *TestController) Get(c *gin.Context) {
 	filter := bson.M{}
-	tests, err := ctrl.DB.Get(context.TODO(), filter, models.TESTCOLLECTION)
+	tests, err := ctrl.Service.Get(context.TODO(), filter, models.TESTCOLLECTION)
 	if err != nil {
 		fmt.Println(err)
 		c.Error(err)
@@ -56,14 +58,16 @@ func (ctrl *TestController) GetById(c *gin.Context) {
 		})
 		return
 	}
-	test, err := ctrl.DB.GetById(context.TODO(), id, models.TESTCOLLECTION)
+	res, err := ctrl.Service.GetById(context.TODO(), id, models.TESTCOLLECTION)
+	//test1 := res.([]byte)
+	//test = test(test1)
 	if err != nil {
 		c.JSON(404, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	c.JSON(200, test)
+	c.JSON(200, res)
 }
 
 func (ctrl *TestController) Update(c *gin.Context) {
@@ -78,7 +82,7 @@ func (ctrl *TestController) Update(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-	updated, err := ctrl.DB.Update(context.TODO(), id, updateTestForm, models.TESTCOLLECTION)
+	updated, err := ctrl.Service.Update(context.TODO(), id, updateTestForm, models.TESTCOLLECTION)
 	if err != nil {
 		c.Error(err)
 		return
@@ -91,7 +95,7 @@ func (ctrl *TestController) Delete(c *gin.Context) {
 		c.Error(err)
 		return
 	}
-	test, err := ctrl.DB.Delete(context.TODO(), id, models.TESTCOLLECTION)
+	test, err := ctrl.Service.Delete(context.TODO(), id, models.TESTCOLLECTION)
 	if err != nil {
 		c.Error(err)
 		return

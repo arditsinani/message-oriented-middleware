@@ -4,6 +4,7 @@ import (
 	"mom/services/ms-extractor/config"
 	"mom/services/ms-extractor/internal/controllers"
 	"mom/services/ms-extractor/internal/db"
+	"mom/services/ms-extractor/internal/services"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,8 +16,20 @@ type Server struct {
 }
 
 func (s *Server) Run() {
+	//init services
+	srvs := services.Services{
+		TestService: services.TestService{
+			DB: s.DB,
+		},
+	}
 	//init controllers
-	s.Controllers = controllers.Controllers{Test: controllers.TestController{Config: s.Config, DB: s.DB}}
+	s.Controllers = controllers.Controllers{
+		Test: controllers.TestController{
+			Config: s.Config,
+			DB: s.DB,
+			Service: srvs.TestService,
+		},
+	}
 	ginEngine := gin.Default()
 	//init routes
 	s.initRoutes(ginEngine)

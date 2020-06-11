@@ -13,8 +13,8 @@ import (
 )
 
 type TestConsumer struct {
-	Config 	*config.Config
-	DB		*db.DB
+	Config *config.Config
+	DB     *db.DB
 }
 
 func (c *TestConsumer) Consumer() {
@@ -36,12 +36,11 @@ func (c *TestConsumer) Consumer() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		insertResult, err := c.DB.Create(context.Background(),interface{}(msg.Value), models.TESTCOPYCOLLECTION)
+		_, err = c.DB.Create(context.Background(), interface{}(msg.Value), models.TESTCOPYCOLLECTION)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		fmt.Println("Inserted a single document: ", insertResult)
+		fmt.Println("Inserted a single document: ", msg.Value)
 	}
 }
 
