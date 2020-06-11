@@ -1,8 +1,8 @@
 package kafka
 
 import (
-	"go.mongodb.org/mongo-driver/mongo"
 	"mom/services/ms-consumer/config"
+	"mom/services/ms-consumer/internal/db"
 	consumers "mom/services/ms-consumer/pkg/kafka/consumers"
 )
 
@@ -14,9 +14,9 @@ type Consumers struct {
 	TestConsumer consumers.TestConsumer
 }
 
-func New(conf config.Config, mongo *mongo.Client) *Kafka {
+func New(conf *config.Config, db *db.DB) *Kafka {
 	kafka := Kafka{
-		Consumers: Consumers{consumers.TestConsumer{Config: conf, Mongo: mongo}},
+		Consumers: Consumers{consumers.TestConsumer{Config: conf, DB: db}},
 	}
 	kafka.Consumers.TestConsumer.Consumer()
 	//go kafka.Consumers.TestConsumer.ReadTopic()

@@ -9,7 +9,7 @@ func (s *Server) initRoutes(server *gin.Engine) {
 	v1 := server.Group("/api/v1")
 	{
 		v1.GET("/status", func(c *gin.Context) {
-			c.JSON(200, gin.H{"status":"ok"})
+			c.JSON(200, gin.H{"status": "ok"})
 		})
 	}
 

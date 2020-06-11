@@ -3,17 +3,18 @@ package kafka
 import (
 	"context"
 	"fmt"
-	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"mom/services/ms-consumer/config"
-	"mom/services/ms-consumer/internal/services"
+	"mom/services/ms-consumer/internal/db"
+	"mom/services/ms-consumer/internal/models"
 	"time"
+
+	"github.com/segmentio/kafka-go"
 )
 
 type TestConsumer struct {
-	Config config.Config
-	Mongo *mongo.Client
+	Config 	*config.Config
+	DB		*db.DB
 }
 
 func (c *TestConsumer) Consumer() {
@@ -26,7 +27,7 @@ func (c *TestConsumer) Consumer() {
 		Topic:    topic,
 		MinBytes: 1,
 		MaxBytes: 10e6, // 10MB
-		MaxWait: 1 * time.Millisecond,
+		MaxWait:  1 * time.Millisecond,
 	})
 	defer reader.Close()
 
@@ -35,8 +36,7 @@ func (c *TestConsumer) Consumer() {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		insertResult, err := services.Insert(c.Mongo, context.Background(), interface{}(msg.Value), c.Config.Mongo.DatabaseName, "test_copy")
+		insertResult, err := c.DB.Create(context.Background(),interface{}(msg.Value), models.TESTCOPYCOLLECTION)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -55,7 +55,7 @@ func (c *TestConsumer) ConsumerBatch() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	conn.SetReadDeadline(time.Now().Add(10*time.Second))
+	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 	batch := conn.ReadBatch(10e3, 1e6) // fetch 10KB min, 1MB max
 
 	b := make([]byte, 10e3) // 10KB max per message

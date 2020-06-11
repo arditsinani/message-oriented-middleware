@@ -23,4 +23,5 @@ type TestCollection struct {
 
 const (
 	TESTCOLLECTION = "test_collection"
+	TESTCOPYCOLLECTION = "test_copy"
 )

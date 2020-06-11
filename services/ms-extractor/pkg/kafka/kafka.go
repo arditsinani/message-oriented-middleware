@@ -1,8 +1,8 @@
 package kafka
 
 import (
-	"go.mongodb.org/mongo-driver/mongo"
 	"mom/services/ms-extractor/config"
+	"mom/services/ms-extractor/internal/db"
 	producers "mom/services/ms-extractor/pkg/kafka/producers"
 )
 
@@ -14,9 +14,9 @@ type Producers struct {
 	TestProducer producers.TestProducer
 }
 
-func New(conf config.Config, mongo *mongo.Client) *Kafka {
+func New(conf *config.Config, db *db.DB) *Kafka {
 	kafka := Kafka{
-		Producers: Producers{producers.TestProducer{Config: conf, Mongo: mongo}},
+		Producers: Producers{producers.TestProducer{Config: conf, DB: db}},
 	}
 
 	return &kafka

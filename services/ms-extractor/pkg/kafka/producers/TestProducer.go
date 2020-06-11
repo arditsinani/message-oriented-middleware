@@ -3,18 +3,20 @@ package kafka
 import (
 	"context"
 	"fmt"
+	"mom/services/ms-extractor/config"
+	"mom/services/ms-extractor/internal/db"
+	"time"
+
 	"github.com/segmentio/kafka-go"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"mom/services/ms-extractor/config"
-	"time"
 )
 
 type TestProducer struct {
-	Config config.Config
-	Mongo *mongo.Client
+	Config *config.Config
+	DB  *db.DB
 }
-func  (p *TestProducer) Producer(raw bson.Raw, topic string) {
+
+func (p *TestProducer) Producer(raw bson.Raw, topic string) {
 	fmt.Println("started producer")
 	// to produce messages
 	//topic := "test"
@@ -30,15 +32,15 @@ func  (p *TestProducer) Producer(raw bson.Raw, topic string) {
 
 	conn.Close()
 }
-func  (p *TestProducer) ProducerBatch(raw bson.Raw, topic string) {
+func (p *TestProducer) ProducerBatch(raw bson.Raw, topic string) {
 	fmt.Println("started producer")
 	// to produce messages
 	//topic := "test"
 	//partition := 0
 
 	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:  []string{p.Config.Kafka.Address()},
-		Topic:    topic,
+		Brokers:      []string{p.Config.Kafka.Address()},
+		Topic:        topic,
 		Balancer:     &kafka.LeastBytes{},
 		BatchTimeout: 10 * time.Millisecond,
 	})
@@ -55,7 +57,6 @@ func  (p *TestProducer) ProducerBatch(raw bson.Raw, topic string) {
 	fmt.Println("writen message => ", raw)
 
 }
-
 
 //func EventListenerTestConfluent() {
 //

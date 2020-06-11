@@ -3,29 +3,29 @@ package watchers
 import (
 	"context"
 	"fmt"
+	"log"
+	"mom/services/ms-extractor/config"
+	"mom/services/ms-extractor/internal/db"
+	"mom/services/ms-extractor/internal/models"
+	"mom/services/ms-extractor/pkg/kafka"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
-	"mom/services/ms-extractor/config"
-	"mom/services/ms-extractor/internal/models"
-	"mom/services/ms-extractor/pkg/kafka"
 )
 
 type TestWatcher struct {
-	Config config.Config
-	Mongo *mongo.Client
-	Kafka *kafka.Kafka
+	Config *config.Config
+	DB     *db.DB
+	Kafka  *kafka.Kafka
 }
 
-func (w *TestWatcher) CreateStream () {
-	collection := w.Mongo.Database(w.Config.Mongo.DatabaseName).Collection(models.TESTCOLLECTION)
-
+func (w *TestWatcher) CreateStream() {
 	// specify a pipeline that will only match "insert" events
 	// specify the MaxAwaitTimeOption to have each attempt wait two seconds for new documents
 	matchStage := bson.D{{"$match", bson.D{{"operationType", "insert"}}}}
-	streamOptions := options.ChangeStream().SetFullDocument(options.UpdateLookup)
-	changeStream, err := collection.Watch(context.TODO(), mongo.Pipeline{matchStage}, streamOptions)
+	streamOptions := w.DB.GetStreamOptions()
+	changeStream, err := w.DB.Stream(context.TODO(), models.TESTCOLLECTION, mongo.Pipeline{matchStage}, streamOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func (w *TestWatcher) CreateStream () {
 	}
 }
 
-func (w *TestWatcher) CreateTestStreamFromFind () {
+func (w *TestWatcher) CreateTestStreamFromFind() {
 	// Pass these options to the Find method
 	findOptions := options.Find()
 
@@ -47,7 +47,7 @@ func (w *TestWatcher) CreateTestStreamFromFind () {
 	var results []*models.Test
 
 	// Passing bson.D{{}} as the filter matches all documents in the collection
-	cur, err := w.Mongo.Database(w.Config.Mongo.DatabaseName).Collection(models.TESTCOLLECTION).Find(context.TODO(), bson.D{{}}, findOptions)
+	cur, err := w.DB.GetCursor(context.TODO(), bson.M{}, models.TESTCOLLECTION, findOptions)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -6,9 +6,9 @@ import (
 )
 
 type Config struct {
-	Mongo 	Mongo
-	Kafka 	Kafka
-	Server 	Server
+	Mongo  Mongo
+	Kafka  Kafka
+	Server Server
 }
 
 type Mongo struct {
@@ -44,10 +44,10 @@ func (m *Mongo) Url() string {
 	return fmt.Sprintf("mongodb://%s:%s/?replicaSet=%s&connect=direct", m.Hostname, m.Port, m.ReplicaSet)
 }
 
-func New() Config {
-	return Config {
-		Mongo: 	Mongo{Hostname: "localhost",Port: "30001",DatabaseName: "consumer",ReplicaSet: "rs1"},
-		Kafka: 	Kafka{Hostname: "kafka1",Port: "9092", Network: "tcp"},
+func New() *Config {
+	return &Config{
+		Mongo:  Mongo{Hostname: "localhost", Port: "30001", DatabaseName: "consumer", ReplicaSet: "rs1"},
+		Kafka:  Kafka{Hostname: "kafka1", Port: "9092", Network: "tcp"},
 		Server: Server{Port: ":8080"},
 	}
 }
