@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/segmentio/kafka-go"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type TestProducer struct {
@@ -16,7 +15,7 @@ type TestProducer struct {
 	DB  *db.DB
 }
 
-func (p *TestProducer) Producer(raw bson.Raw, topic string) {
+func (p *TestProducer) Producer(raw db.Raw, topic string) {
 	fmt.Println("started producer")
 	// to produce messages
 	//topic := "test"
@@ -32,7 +31,7 @@ func (p *TestProducer) Producer(raw bson.Raw, topic string) {
 
 	conn.Close()
 }
-func (p *TestProducer) ProducerBatch(raw bson.Raw, topic string) {
+func (p *TestProducer) ProducerBatch(raw db.Raw, topic string) {
 	fmt.Println("started producer")
 	// to produce messages
 	//topic := "test"

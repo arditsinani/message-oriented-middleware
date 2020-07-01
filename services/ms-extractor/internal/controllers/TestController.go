@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"mom/services/ms-extractor/config"
 	"mom/services/ms-extractor/internal/db"
 	"mom/services/ms-extractor/internal/models"
@@ -34,7 +32,7 @@ func (ctrl *TestController) Create(c *gin.Context) {
 }
 
 func (ctrl *TestController) Get(c *gin.Context) {
-	filter := bson.M{}
+	filter := db.MType{}
 	tests, err := ctrl.Service.Get(context.TODO(), filter, models.TESTCOLLECTION)
 	if err != nil {
 		fmt.Println(err)
@@ -51,7 +49,7 @@ func (ctrl *TestController) GetById(c *gin.Context) {
 		})
 		return
 	}
-	id, err := primitive.ObjectIDFromHex(c.Param("id"))
+	id, err := ctrl.DB.GetObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": err.Error(),
@@ -59,8 +57,6 @@ func (ctrl *TestController) GetById(c *gin.Context) {
 		return
 	}
 	res, err := ctrl.Service.GetById(context.TODO(), id, models.TESTCOLLECTION)
-	//test1 := res.([]byte)
-	//test = test(test1)
 	if err != nil {
 		c.JSON(404, gin.H{
 			"error": err.Error(),
@@ -71,8 +67,7 @@ func (ctrl *TestController) GetById(c *gin.Context) {
 }
 
 func (ctrl *TestController) Update(c *gin.Context) {
-	// TODO validate hex id
-	id, err := primitive.ObjectIDFromHex(c.Param("id"))
+	id, err := ctrl.DB.GetObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		c.Error(err)
 		return
@@ -90,7 +85,7 @@ func (ctrl *TestController) Update(c *gin.Context) {
 	c.JSON(200, updated)
 }
 func (ctrl *TestController) Delete(c *gin.Context) {
-	id, err := primitive.ObjectIDFromHex(c.Param("id"))
+	id, err := ctrl.DB.GetObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		c.Error(err)
 		return

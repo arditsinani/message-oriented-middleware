@@ -14,6 +14,17 @@ type DB struct {
 	Client *mongo.Client
 }
 
+// inherited types from mongo
+type MType = bson.M
+type AType = bson.A
+type DType = bson.D
+type EType = bson.E
+type Raw = bson.Raw
+type Pipeline = mongo.Pipeline
+type ObjectID = primitive.ObjectID
+type UpdateResult = mongo.UpdateResult
+type DeleteResult = mongo.DeleteResult
+
 func (db *DB) getDB() *mongo.Database {
 	return db.Client.Database(db.Config.Mongo.DatabaseName)
 }
@@ -34,13 +45,13 @@ func (db *DB) GetById(ctx context.Context, id primitive.ObjectID, coll string) *
 	return db.getCollection(coll).FindOne(ctx, bson.M{"_id": id})
 }
 
-func (db *DB) Update(ctx context.Context, id primitive.ObjectID, doc interface{}, coll string) (*mongo.UpdateResult, error) {
+func (db *DB) Update(ctx context.Context, id primitive.ObjectID, doc interface{}, coll string) (*UpdateResult, error) {
 	filter := bson.M{"_id": bson.M{"$eq": id}}
 	opts := options.Update().SetUpsert(true)
 	return db.getCollection(coll).UpdateOne(ctx, filter, bson.M{"$set": doc}, opts)
 }
 
-func (db *DB) Delete(ctx context.Context, id primitive.ObjectID, coll string) (*mongo.DeleteResult, error)  {
+func (db *DB) Delete(ctx context.Context, id primitive.ObjectID, coll string) (*DeleteResult, error)  {
 	return db.getCollection(coll).DeleteOne(ctx, bson.M{"_id": id})
 }
 
@@ -50,7 +61,14 @@ func (db *DB) Stream(ctx context.Context, coll string, pipeline mongo.Pipeline, 
 
 func (db *DB) GetStreamOptions() *options.ChangeStreamOptions {
 	return options.ChangeStream().SetFullDocument(options.UpdateLookup)
+}
 
+func (db *DB) GetFindOptions() *options.FindOptions {
+	return options.Find()
+}
+
+func (db *DB) GetObjectIDFromHex(id string) (primitive.ObjectID, error) {
+	return primitive.ObjectIDFromHex(id)
 }
 
 func New(conf *config.Config) (*DB, error) {
