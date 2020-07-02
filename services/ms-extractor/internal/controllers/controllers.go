@@ -1,5 +1,7 @@
 package controllers
 
 type Controllers struct {
-	Test TestController
+	Test TestCtrl
+	WS   WSCtrl
+	Prj  PrjCtrl
 }

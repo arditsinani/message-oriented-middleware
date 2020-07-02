@@ -2,11 +2,12 @@ package db
 
 import (
 	"context"
+	"mom/services/ms-extractor/config"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"mom/services/ms-extractor/config"
 )
 
 type DB struct {
@@ -51,7 +52,7 @@ func (db *DB) Update(ctx context.Context, id primitive.ObjectID, doc interface{}
 	return db.getCollection(coll).UpdateOne(ctx, filter, bson.M{"$set": doc}, opts)
 }
 
-func (db *DB) Delete(ctx context.Context, id primitive.ObjectID, coll string) (*DeleteResult, error)  {
+func (db *DB) Delete(ctx context.Context, id primitive.ObjectID, coll string) (*DeleteResult, error) {
 	return db.getCollection(coll).DeleteOne(ctx, bson.M{"_id": id})
 }
 

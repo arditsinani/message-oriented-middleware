@@ -11,12 +11,12 @@ type Kafka struct {
 }
 
 type Producers struct {
-	TestProducer producers.TestProducer
+	TestP producers.TestP
 }
 
 func New(conf *config.Config, db *db.DB) *Kafka {
 	kafka := Kafka{
-		Producers: Producers{producers.TestProducer{Config: conf, DB: db}},
+		Producers: Producers{producers.TestP{Config: conf, DB: db}},
 	}
 
 	return &kafka

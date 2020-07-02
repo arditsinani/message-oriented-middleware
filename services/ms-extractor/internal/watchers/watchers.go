@@ -8,11 +8,11 @@ import (
 )
 
 type Watchers struct {
-	Test TestWatcher
+	Test TestW
 }
 
 func New(conf *config.Config, db *db.DB, kafka *kafka.Kafka) {
-	watchers := Watchers{Test: TestWatcher{Config: conf, DB: db, Kafka: kafka}}
+	watchers := Watchers{Test: TestW{Config: conf, DB: db, Kafka: kafka}}
 
 	values := reflect.ValueOf(&watchers).Elem()
 	for i := 0; i < values.NumField(); i++ {

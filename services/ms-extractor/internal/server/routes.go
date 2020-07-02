@@ -23,5 +23,23 @@ func (s *Server) initRoutes(server *gin.Engine) {
 			testGroup.PUT("/:id", s.Controllers.Test.Update)
 			testGroup.DELETE("/:id", s.Controllers.Test.Delete)
 		}
+
+		wsGroup := extractorGroup.Group("/workspace")
+		{
+			wsGroup.POST("", s.Controllers.WS.Create)
+			wsGroup.GET("", s.Controllers.WS.Get)
+			wsGroup.GET("/:id", s.Controllers.WS.GetById)
+			wsGroup.PUT("/:id", s.Controllers.WS.Update)
+			wsGroup.DELETE("/:id", s.Controllers.WS.Delete)
+		}
+
+		prjGroup := extractorGroup.Group("/project")
+		{
+			prjGroup.POST("", s.Controllers.Prj.Create)
+			prjGroup.GET("", s.Controllers.Prj.Get)
+			prjGroup.GET("/:id", s.Controllers.Prj.GetById)
+			prjGroup.PUT("/:id", s.Controllers.Prj.Update)
+			prjGroup.DELETE("/:id", s.Controllers.Prj.Delete)
+		}
 	}
 }

@@ -12,12 +12,12 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
-type TestConsumer struct {
+type TestC struct {
 	Config *config.Config
 	DB     *db.DB
 }
 
-func (c *TestConsumer) Consumer() {
+func (c *TestC) Consumer() {
 	fmt.Println("started consumer")
 	topic := "test"
 
@@ -44,7 +44,7 @@ func (c *TestConsumer) Consumer() {
 	}
 }
 
-func (c *TestConsumer) ConsumerBatch() {
+func (c *TestC) ConsumerBatch() {
 	fmt.Println("started consumer batch")
 	topic := "test"
 	partition := 0
@@ -70,7 +70,7 @@ func (c *TestConsumer) ConsumerBatch() {
 	conn.Close()
 }
 
-//func (c *TestConsumer) ReadTopic() {
+//func (c *TestC) ReadTopic() {
 //	fmt.Println("started read topic")
 //	topic := "test"
 //	partition :=0

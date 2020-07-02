@@ -1,5 +1,7 @@
 package services
 
 type Services struct {
-	TestService TestService
+	TestS TestS
+	WSS   WSS
+	PrjS  PrjS
 }

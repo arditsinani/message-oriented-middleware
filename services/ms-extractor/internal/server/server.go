@@ -18,16 +18,32 @@ type Server struct {
 func (s *Server) Run() {
 	//init services
 	srvs := services.Services{
-		TestService: services.TestService{
+		TestS: services.TestS{
+			DB: s.DB,
+		},
+		WSS: services.WSS{
+			DB: s.DB,
+		},
+		PrjS: services.PrjS{
 			DB: s.DB,
 		},
 	}
 	//init controllers
 	s.Controllers = controllers.Controllers{
-		Test: controllers.TestController{
-			Config: s.Config,
-			DB: s.DB,
-			Service: srvs.TestService,
+		Test: controllers.TestCtrl{
+			Config:  s.Config,
+			DB:      s.DB,
+			Service: srvs.TestS,
+		},
+		WS: controllers.WSCtrl{
+			Config:  s.Config,
+			DB:      s.DB,
+			Service: srvs.WSS,
+		},
+		Prj: controllers.PrjCtrl{
+			Config:  s.Config,
+			DB:      s.DB,
+			Service: srvs.PrjS,
 		},
 	}
 	ginEngine := gin.Default()

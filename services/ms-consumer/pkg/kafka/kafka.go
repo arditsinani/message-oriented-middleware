@@ -11,12 +11,12 @@ type Kafka struct {
 }
 
 type Consumers struct {
-	TestConsumer consumers.TestConsumer
+	TestConsumer consumers.TestC
 }
 
 func New(conf *config.Config, db *db.DB) *Kafka {
 	kafka := Kafka{
-		Consumers: Consumers{consumers.TestConsumer{Config: conf, DB: db}},
+		Consumers: Consumers{consumers.TestC{Config: conf, DB: db}},
 	}
 	kafka.Consumers.TestConsumer.Consumer()
 	//go kafka.Consumers.TestConsumer.ReadTopic()

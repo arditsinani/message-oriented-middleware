@@ -1,29 +1,31 @@
+// test controller
 package controllers
 
 import (
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"mom/services/ms-extractor/config"
 	"mom/services/ms-extractor/internal/db"
 	"mom/services/ms-extractor/internal/models"
 	"mom/services/ms-extractor/internal/services"
+
+	"github.com/gin-gonic/gin"
 )
 
-type TestController struct {
-	Config *config.Config
-	DB  *db.DB
-	Service services.TestService
+type TestCtrl struct {
+	Config  *config.Config
+	DB      *db.DB
+	Service services.TestS
 }
 
-func (ctrl *TestController) Create(c *gin.Context) {
+func (ctrl *TestCtrl) Create(c *gin.Context) {
 	// validate payload
 	var createTestForm models.CreateTestForm
 	if err := c.ShouldBindJSON(&createTestForm); err != nil {
 		c.Error(err)
 		return
 	}
-	inserted, err := ctrl.Service.Create(context.TODO(),createTestForm,models.TESTCOLLECTION)
+	inserted, err := ctrl.Service.Create(context.TODO(), createTestForm, models.TESTCOLLECTION)
 	if err != nil {
 		c.Error(err)
 		return
@@ -31,7 +33,7 @@ func (ctrl *TestController) Create(c *gin.Context) {
 	c.JSON(200, inserted)
 }
 
-func (ctrl *TestController) Get(c *gin.Context) {
+func (ctrl *TestCtrl) Get(c *gin.Context) {
 	filter := db.MType{}
 	tests, err := ctrl.Service.Get(context.TODO(), filter, models.TESTCOLLECTION)
 	if err != nil {
@@ -42,7 +44,7 @@ func (ctrl *TestController) Get(c *gin.Context) {
 	c.JSON(200, tests)
 }
 
-func (ctrl *TestController) GetById(c *gin.Context) {
+func (ctrl *TestCtrl) GetById(c *gin.Context) {
 	if c.Param("id") == "" || len(c.Param("id")) != 24 {
 		c.JSON(400, gin.H{
 			"error": "Bad Request",
@@ -66,7 +68,7 @@ func (ctrl *TestController) GetById(c *gin.Context) {
 	c.JSON(200, res)
 }
 
-func (ctrl *TestController) Update(c *gin.Context) {
+func (ctrl *TestCtrl) Update(c *gin.Context) {
 	id, err := ctrl.DB.GetObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		c.Error(err)
@@ -84,7 +86,7 @@ func (ctrl *TestController) Update(c *gin.Context) {
 	}
 	c.JSON(200, updated)
 }
-func (ctrl *TestController) Delete(c *gin.Context) {
+func (ctrl *TestCtrl) Delete(c *gin.Context) {
 	id, err := ctrl.DB.GetObjectIDFromHex(c.Param("id"))
 	if err != nil {
 		c.Error(err)

@@ -10,12 +10,12 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
-type TestProducer struct {
+type TestP struct {
 	Config *config.Config
-	DB  *db.DB
+	DB     *db.DB
 }
 
-func (p *TestProducer) Producer(raw db.Raw, topic string) {
+func (p *TestP) Producer(raw db.Raw, topic string) {
 	fmt.Println("started producer")
 	// to produce messages
 	//topic := "test"
@@ -31,7 +31,7 @@ func (p *TestProducer) Producer(raw db.Raw, topic string) {
 
 	conn.Close()
 }
-func (p *TestProducer) ProducerBatch(raw db.Raw, topic string) {
+func (p *TestP) ProducerBatch(raw db.Raw, topic string) {
 	fmt.Println("started producer")
 	// to produce messages
 	//topic := "test"

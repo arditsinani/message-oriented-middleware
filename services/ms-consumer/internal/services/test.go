@@ -3,15 +3,15 @@ package services
 import (
 	"context"
 	"log"
-	"mom/services/ms-extractor/internal/db"
-	"mom/services/ms-extractor/internal/models"
+	"mom/services/ms-consumer/internal/db"
+	"mom/services/ms-consumer/internal/models"
 )
 
-type TestService struct {
+type TestS struct {
 	DB *db.DB
 }
 
-func (s *TestService) Create(ctx context.Context, test models.CreateTestForm, coll string) (models.Test, error) {
+func (s *TestS) Create(ctx context.Context, test models.CreateTestForm, coll string) (models.Test, error) {
 	result, err := s.DB.Create(ctx, test, coll)
 	if err != nil {
 		return models.Test{}, err
@@ -24,7 +24,7 @@ func (s *TestService) Create(ctx context.Context, test models.CreateTestForm, co
 	return response, nil
 }
 
-func (s *TestService) Get(ctx context.Context, filter db.MType, coll string) ([]*models.Test, error) {
+func (s *TestS) Get(ctx context.Context, filter db.MType, coll string) ([]*models.Test, error) {
 	findOptions := s.DB.GetFindOptions()
 	findOptions.SetLimit(1000)
 	cur, err := s.DB.GetCursor(ctx, filter, coll, findOptions)
@@ -51,18 +51,17 @@ func (s *TestService) Get(ctx context.Context, filter db.MType, coll string) ([]
 	return results, err
 }
 
-func (s *TestService) GetById(ctx context.Context, id db.ObjectID, coll string) (models.Test, error) {
+func (s *TestS) GetById(ctx context.Context, id db.ObjectID, coll string) (models.Test, error) {
 	test := models.Test{}
 	singleResult := s.DB.GetById(ctx, id, coll)
 	err := singleResult.Decode(&test)
 	return test, err
 }
 
-func (s *TestService) Update(ctx context.Context, id db.ObjectID, test models.UpdateTestForm, coll string) (*db.UpdateResult, error){
+func (s *TestS) Update(ctx context.Context, id db.ObjectID, test models.UpdateTestForm, coll string) (*db.UpdateResult, error) {
 	return s.DB.Update(ctx, id, test, coll)
 }
 
-func (s *TestService) Delete(ctx context.Context, id db.ObjectID, coll string) (*db.DeleteResult, error) {
+func (s *TestS) Delete(ctx context.Context, id db.ObjectID, coll string) (*db.DeleteResult, error) {
 	return s.DB.Delete(ctx, id, coll)
 }
-
